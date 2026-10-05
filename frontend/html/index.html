@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1b4332">
+  <title>Annisa Beno Tea House | Cashbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/jurnal-kas.css?v=5">
+  <link rel="stylesheet" href="../css/style.css?v=5">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="../js/apps.js?v=2"></script>
+</head>
+<body>
+  <div class="login-screen" id="login-screen" hidden>
+    <div class="login-art" aria-hidden="true">
+      <div class="brand-mark large">AB<span><i data-lucide="leaf"></i></span></div>
+      <p class="eyebrow">ANNISA BENO TEA HOUSE</p>
+      <h1>Setiap rupiah,<br>punya ceritanya.</h1>
+      <p class="login-note">Catat dengan tenang. Kelola dengan bijak.</p>
+      <div class="tea-stamp">EST. 2024<br><span>STEEP · BALANCE · GROW</span></div>
+    </div>
+    <form class="login-form" id="login-form">
+      <div class="brand-mark small">AB<span><i data-lucide="leaf"></i></span></div>
+      <p class="eyebrow">RUANG KERJA</p>
+      <h2>Selamat datang</h2>
+      <p class="muted">Masuk untuk membuka pembukuan Tea House.</p>
+      <label for="login-email">Email</label>
+      <input id="login-email" name="email" type="email" autocomplete="username" placeholder="nama@annisa-beno.com" required>
+      <label for="login-password">Kata sandi</label>
+      <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
+      <button class="button button-primary full-width" type="submit"><i data-lucide="arrow-right-to-line"></i> Masuk ke sistem</button>
+      <p class="form-message" id="login-message" aria-live="polite"></p>
+      <p class="login-footnote">Akses dikelola melalui akun Supabase Tea House.</p>
+    </form>
+  </div>
+
+  <div class="app-shell" id="app-shell" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#overview" aria-label="Annisa Beno Tea House, beranda">
+        <span class="brand-mark">AB<span><i data-lucide="leaf"></i></span></span>
+        <span class="brand-copy"><strong>annisa beno</strong><small>TEA HOUSE · CASHBOOK</small></span>
+      </a>
+      <div class="sidebar-caption">MENU UTAMA</div>
+      <nav class="main-nav" aria-label="Navigasi utama">
+        <button class="nav-link active" data-view="overview"><i data-lucide="layout-dashboard"></i><span>Ringkasan</span></button>
+        <button class="nav-link" data-view="transactions"><i data-lucide="arrow-left-right"></i><span>Arus kas</span><span class="nav-count" id="transaction-count">0</span></button>
+        <button class="nav-link" data-view="reports"><i data-lucide="chart-no-axes-combined"></i><span>Laporan</span></button>
+        <a class="nav-link" href="#jurnal-kas" data-view="jurnal-kas"><i data-lucide="book-open-text"></i><span>Jurnal Kas</span></a>
+        <button class="nav-link" data-view="accounts"><i data-lucide="wallet-cards"></i><span>Akun kas</span></button>
+        <button class="nav-link" data-view="categories"><i data-lucide="tags"></i><span>Kategori</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sync-status"><span class="status-dot"></span><span><strong>Supabase</strong><small id="sync-label">Menghubungkan...</small></span></div>
+        <button class="profile-button" id="logout-button"><span class="avatar" id="user-avatar">A</span><span class="profile-copy"><strong id="user-name">Annisa Beno</strong><small>Keluar dari akun</small></span><i data-lucide="log-out"></i></button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menu-button" aria-label="Buka menu"><i data-lucide="menu"></i></button>
+        <div class="breadcrumb"><span>Annisa Beno Tea House</span><i data-lucide="chevron-right"></i><strong id="breadcrumb-current">Ringkasan</strong></div>
+        <div class="topbar-actions"><span class="today-label" id="today-label"></span><button class="icon-button" id="refresh-button" aria-label="Muat ulang data" title="Muat ulang data"><i data-lucide="refresh-cw"></i></button><div class="topbar-profile"><span class="avatar">A</span><span><strong>Annisa Beno</strong><small>Tea House</small></span></div></div>
+      </header>
+
+      <section class="view-panel active" id="view-overview">
+        <div class="page-heading"><div><p class="eyebrow">RABU, 30 SEPTEMBER 2026</p><h1>Ringkasan <em>keuangan</em></h1><p class="muted">Pantau denyut kas Tea House hari ini.</p></div><button class="button button-primary" data-action="new-transaction"><i data-lucide="plus"></i> Catat transaksi</button></div>
+        <div class="summary-grid">
+          <article class="summary-card balance-card"><div class="summary-top"><span>Saldo seluruh kas</span><span class="summary-icon"><i data-lucide="landmark"></i></span></div><strong id="total-balance">Rp0</strong><div class="summary-bottom"><span class="summary-foot-icon"><i data-lucide="circle-dollar-sign"></i></span><span>Akumulasi posisi kas saat ini</span></div></article>
+          <article class="summary-card"><div class="summary-top"><span>Kas masuk hari ini</span><span class="summary-icon green"><i data-lucide="trending-up"></i></span></div><strong id="today-income">Rp0</strong><div class="summary-bottom"><span class="trend-mark up">↗</span><span id="income-caption">Dari seluruh akun kas</span></div></article>
+          <article class="summary-card"><div class="summary-top"><span>Kas keluar hari ini</span><span class="summary-icon red"><i data-lucide="trending-down"></i></span></div><strong id="today-expense">Rp0</strong><div class="summary-bottom"><span class="trend-mark down">↘</span><span id="expense-caption">Dari seluruh akun kas</span></div></article>
+          <article class="summary-card"><div class="summary-top"><span>Transaksi bulan ini</span><span class="summary-icon gold"><i data-lucide="receipt-text"></i></span></div><strong id="month-count">0</strong><div class="summary-bottom"><span class="summary-foot-icon"><i data-lucide="calendar-days"></i></span><span id="month-caption">September 2026</span></div></article>
+        </div>
+        <div class="overview-columns">
+          <section class="content-section accounts-section"><div class="section-heading"><div><p class="eyebrow">PEMBAGIAN SALDO</p><h2>Posisi akun kas</h2></div><button class="text-button" data-navigate="accounts">Lihat semua <i data-lucide="arrow-up-right"></i></button></div><div class="account-list" id="overview-accounts"></div></section>
+          <section class="content-section activity-section"><div class="section-heading"><div><p class="eyebrow">CATATAN TERBARU</p><h2>Aktivitas terakhir</h2></div><button class="text-button" data-navigate="transactions">Buka arus kas <i data-lucide="arrow-up-right"></i></button></div><div class="activity-list" id="recent-transactions"></div></section>
+        </div>
+        <section class="content-section category-section"><div class="section-heading"><div><p class="eyebrow">KATEGORI BULAN INI</p><h2>Ke mana uang bergerak</h2></div><span class="section-period" id="category-period">September 2026</span></div><div class="category-bars" id="category-summary"></div></section>
+      </section>
+
+      <section class="view-panel" id="view-transactions">
+        <div class="page-heading"><div><p class="eyebrow">BUKU BESAR · KAS UTAMA</p><h1>Arus <em>kas</em></h1><p class="muted">Transaksi yang dicatat langsung pada Kas Utama.</p></div><button class="button button-primary" data-action="new-transaction"><i data-lucide="plus"></i> Catat transaksi</button></div>
+        <div class="ledger-toolbar"><div class="segmented-control" role="group" aria-label="Filter jenis transaksi"><button class="selected" data-filter="all">Semua <span id="filter-count-all">0</span></button><button data-filter="masuk">Kas masuk</button><button data-filter="keluar">Kas keluar</button><button data-filter="transfer">Transfer</button></div><div class="ledger-tools"><label class="search-field"><i data-lucide="search"></i><input type="search" id="transaction-search" placeholder="Cari catatan..."></label><input class="month-filter" id="month-filter" type="month" aria-label="Filter bulan"></div></div>
+        <div class="table-wrap"><table><thead><tr><th>TANGGAL</th><th>CATATAN</th><th>KATEGORI</th><th>AKUN KAS</th><th>JENIS</th><th class="align-right">NOMINAL</th><th><span class="sr-only">Aksi</span></th></tr></thead><tbody id="transaction-table"></tbody></table><div class="empty-state" id="transaction-empty" hidden><span class="empty-icon"><i data-lucide="notebook-tabs"></i></span><strong>Belum ada catatan di sini</strong><p>Transaksi yang sesuai filter akan muncul di sini.</p></div></div>
+        <div class="table-footer"><span id="ledger-result-count">Menampilkan 0 transaksi</span><span class="table-note"><i data-lucide="shield-check"></i> Tersimpan aman di Supabase</span></div>
+      </section>
+
+      <section class="view-panel" id="view-reports">
+        <div class="page-heading"><div><p class="eyebrow">LAPORAN KEUANGAN</p><h1>Ikhtisar <em>arus kas</em></h1><p class="muted">Ringkasan pemasukan, pengeluaran, dan pergerakan kas per periode.</p></div></div>
+        <form class="report-toolbar no-print" id="report-filter-form">
+          <div class="segmented-control report-scope-control" role="group" aria-label="Jenis laporan"><button class="selected" type="button" data-report-scope="overall">Laporan Gabungan Seluruh Kas</button><button type="button" data-report-scope="account">Laporan Per Akun Kas</button></div>
+          <label class="report-account-filter" id="report-account-field" for="report-account-select" hidden>Akun kas<select id="report-account-select" aria-label="Pilih akun kas"></select></label>
+          <label for="report-start">Dari tanggal<input id="report-start" type="date" required></label>
+          <label for="report-end">Sampai tanggal<input id="report-end" type="date" required></label>
+          <button class="button button-primary" type="submit"><i data-lucide="filter"></i> Terapkan</button>
+          <span class="report-toolbar-divider"></span>
+          <button class="button button-quiet" type="button" id="report-export"><i data-lucide="download"></i> Ekspor CSV</button>
+          <button class="button button-quiet" type="button" id="report-print"><i data-lucide="printer"></i> Cetak</button>
+        </form>
+        <p class="report-error" id="report-error" aria-live="polite"></p>
+        <div class="report-period-line"><span>Periode laporan</span><strong id="report-period-label">-</strong><span class="report-period-count" id="report-period-count">0 transaksi</span></div>
+        <div class="summary-grid report-summary-grid">
+          <article class="summary-card"><div class="summary-top"><span id="report-income-label">Total kas masuk</span><span class="summary-icon green"><i data-lucide="trending-up"></i></span></div><strong id="report-income">Rp0</strong><div class="summary-bottom"><span>Selama periode terpilih</span></div></article>
+          <article class="summary-card"><div class="summary-top"><span id="report-expense-label">Total kas keluar</span><span class="summary-icon red"><i data-lucide="trending-down"></i></span></div><strong id="report-expense">Rp0</strong><div class="summary-bottom"><span>Selama periode terpilih</span></div></article>
+          <article class="summary-card balance-card"><div class="summary-top"><span id="report-net-label">Arus bersih</span><span class="summary-icon"><i data-lucide="scale"></i></span></div><strong id="report-net">Rp0</strong><div class="summary-bottom"><span id="report-net-caption">Total masuk dikurangi keluar</span></div></article>
+          <article class="summary-card"><div class="summary-top"><span>Jumlah transaksi</span><span class="summary-icon gold"><i data-lucide="receipt-text"></i></span></div><strong id="report-count">0</strong><div class="summary-bottom"><span>Catatan pada periode terpilih</span></div></article>
+        </div>
+        <div class="report-breakdowns">
+          <section class="content-section"><div class="section-heading"><div><p class="eyebrow">PEMETAAN KATEGORI</p><h2>Rincian per kategori</h2></div></div><div class="table-wrap report-table-wrap"><table class="report-table"><thead><tr><th>KATEGORI</th><th class="align-right">KAS MASUK</th><th class="align-right">KAS KELUAR</th><th class="align-right">BERSIH</th></tr></thead><tbody id="report-category-rows"></tbody></table></div></section>
+          <section class="content-section"><div class="section-heading"><div><p class="eyebrow">POSISI PER KAS</p><h2>Rincian per akun</h2></div></div><div class="table-wrap report-table-wrap"><table class="report-table"><thead><tr><th>AKUN KAS</th><th class="align-right">KAS MASUK</th><th class="align-right">KAS KELUAR</th><th class="align-right">BERSIH</th></tr></thead><tbody id="report-account-rows"></tbody></table></div></section>
+        </div>
+        <section class="content-section report-transactions-section"><div class="section-heading"><div><p class="eyebrow">BUKU TRANSAKSI PERIODE</p><h2>Rincian transaksi</h2></div></div><div class="table-wrap report-table-wrap"><table class="report-table"><thead><tr><th>TANGGAL</th><th>CATATAN</th><th>KATEGORI</th><th>AKUN KAS</th><th>JENIS</th><th class="align-right">NOMINAL</th></tr></thead><tbody id="report-transaction-rows"></tbody></table></div></section>
+      </section>
+
+      <section class="view-panel" id="view-accounts">
+        <div class="page-heading"><div><p class="eyebrow">TEMPAT PENYIMPANAN</p><h1>Akun <em>kas</em></h1><p class="muted">Kelola kotak kas dan pantau saldonya.</p></div><button class="button button-primary" data-action="new-account"><i data-lucide="plus"></i> Tambah akun</button></div>
+        <div class="management-summary"><span><i data-lucide="wallet"></i><strong id="account-total-count">0</strong> akun kas aktif</span><span class="summary-divider"></span><span>Total saldo <strong id="accounts-total-balance">Rp0</strong></span></div>
+        <div class="management-grid" id="account-cards"></div>
+      </section>
+
+      <section class="view-panel" id="view-account-detail">
+        <div class="page-heading account-detail-heading"><div><p class="eyebrow">MUTASI AKUN KAS</p><h1 id="account-detail-title">Rincian <em>akun</em></h1><p class="muted" id="account-detail-description">Saldo dan transaksi akun kas.</p></div><div class="page-heading-actions"><button class="button button-primary" data-action="new-transaction"><i data-lucide="plus"></i> Catat transaksi</button><button class="button button-quiet" data-navigate="accounts"><i data-lucide="arrow-left"></i> Kembali ke akun</button></div></div>
+        <div class="summary-grid account-detail-summary">
+          <article class="summary-card balance-card"><div class="summary-top"><span>Saldo saat ini</span><span class="summary-icon"><i data-lucide="wallet"></i></span></div><strong id="account-detail-balance">Rp0</strong><div class="summary-bottom"><span>Termasuk akun rincian turunannya</span></div></article>
+          <article class="summary-card"><div class="summary-top"><span>Arus masuk</span><span class="summary-icon green"><i data-lucide="trending-up"></i></span></div><strong id="account-detail-in">Rp0</strong><div class="summary-bottom"><span>Termasuk transfer masuk</span></div></article>
+          <article class="summary-card"><div class="summary-top"><span>Arus keluar</span><span class="summary-icon red"><i data-lucide="trending-down"></i></span></div><strong id="account-detail-out">Rp0</strong><div class="summary-bottom"><span>Termasuk transfer keluar</span></div></article>
+          <article class="summary-card"><div class="summary-top"><span>Jumlah transaksi</span><span class="summary-icon gold"><i data-lucide="receipt-text"></i></span></div><strong id="account-detail-count">0</strong><div class="summary-bottom"><span>Mutasi terkait akun ini</span></div></article>
+        </div>
+        <section class="content-section account-detail-ledger"><div class="section-heading"><div><p class="eyebrow">RIWAYAT KAS</p><h2>Transaksi akun</h2></div></div><div class="table-wrap"><table class="account-detail-table"><thead><tr><th>TANGGAL</th><th>CATATAN</th><th>RINCIAN</th><th>AKUN KAS</th><th>ARAH</th><th class="align-right">NOMINAL</th><th><span class="sr-only">Aksi</span></th></tr></thead><tbody id="account-detail-rows"></tbody></table><div class="empty-state" id="account-detail-empty" hidden><span class="empty-icon"><i data-lucide="notebook-tabs"></i></span><strong>Belum ada transaksi</strong><p>Mutasi akun akan muncul di sini.</p></div></div></section>
+      </section>
+
+      <section class="view-panel" id="view-categories">
+        <div class="page-heading"><div><p class="eyebrow">PENGELOMPOKAN HARIAN</p><h1>Daftar <em>kategori</em></h1><p class="muted">Beri konteks pada setiap pergerakan uang.</p></div><button class="button button-primary" data-action="new-category"><i data-lucide="plus"></i> Tambah kategori</button></div>
+        <div class="category-manager-head"><span>KATEGORI</span><span>JENIS</span><span>TOTAL NILAI TERCATAT</span><span><span class="sr-only">Aksi</span></span></div>
+        <div class="category-manager-list" id="category-cards"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+      <div class="modal-heading"><div><p class="eyebrow" id="modal-eyebrow">PEMBUKUAN</p><h2 id="modal-title">Catat transaksi</h2></div><button class="icon-button" data-close-modal aria-label="Tutup"><i data-lucide="x"></i></button></div>
+      <p class="modal-description" id="modal-description">Masukkan detail agar catatan kas tetap jelas.</p>
+      <form id="modal-form"><div id="modal-fields" class="modal-fields"></div><div class="modal-error" id="modal-error" aria-live="polite"></div><div class="modal-actions"><button class="button button-quiet" type="button" data-close-modal>Batal</button><button class="button button-primary" type="submit" id="modal-submit"><i data-lucide="check"></i> Simpan catatan</button></div></form>
+    </section>
+  </div>
+  <div class="toast-region" id="toast-region" aria-live="polite"></div>
+</body>
+</html>
